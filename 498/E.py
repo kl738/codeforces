@@ -1,36 +1,28 @@
-n, q = [int(x) for x in input().split()]
-officers = [int(x) for x in input().split()]
+n, q = map(int,input().split())
+officers = map(int,input().split())
 
-class Node:
-	def __init__(self, v):
-		self.val = v
-		self.children = []
-	def addChild(self, n):
-		self.children.append(n)
+s = [[] for _ in range(n)]
+c = [0] * n
 
-commander = Node(1)
-lst = [None]
-lst.append(commander)
+for i,v in enumerate(officers):
+	s[v-1].append(i+1)
 
-for index, p_index in enumerate(officers):
-	officer = Node(index+2)
-	parent = lst[p_index]
-	parent.addChild(officer)
-	lst.append(officer)
+traversal = []
+def dfs(root):
+	traversal.append(root)
+	c[root] = 1
+	for child in s[root]:
+		dfs(child)
+		c[root] += c[child]
 
-def solve(u, k):
-	start = lst[u]
-	ret = []
-	def dfs(start):
-		ret.append(start)
-		for child in start.children:
-			dfs(child)
-	dfs(start)
-	if len(ret) < k:
-		return -1
+dfs(0)
+
+answer = ""
+for _ in range(q):
+	u, k = map(int,input().split())
+	start = traversal.index(u-1)
+	if k <= c[start]:
+		answer += (str(traversal[start+k-1]+1) + "\n")
 	else:
-		return ret[k-1].val
-
-for i in range(q):
-	u, k = [int(x) for x in input().split()]
-	print(solve(u,k))
+		answer += "-1\n"
+print(answer)
