@@ -2,34 +2,36 @@ n, q = map(int,input().split())
 officers = map(int,input().split())
 
 s = [[] for _ in range(n)]
-c = [0] * n
+c = [1] * n
+b = [0] * n
 
 for i,v in enumerate(officers):
 	s[v-1].append(i+1)
-print("Sucessors",s)
 
 traversal = []
-def dfs(root):
-	traversal.append(root)
-	c[root] = 1
-	for child in s[root]:
-		dfs(child)
-		c[root] += c[child]
+def dfs():
+	stack = [0]
+	while stack:
+		n = stack.pop()
+		traversal.append(n)
+		for child in reversed(s[n]):
+			stack.append(child)
+dfs()
 
-dfs(0)
-print("Counts",c)
-print("Dfs traversl",traversal)
+for i in range(n):
+	b[traversal[i]] = i
 
-
-# answer = ""
+for i in range(n-1,-1,-1):
+	for child in s[i]:
+		c[i] += c[child]
+# print(c)
+answer = []
 for _ in range(q):
 	u, k = map(int,input().split())
-	start = traversal.index(u-1)
-	if k <= c[start]:
-		# answer += (str(traversal[start+k-1]+1) + "\n")
-		print(str(traversal[start+k-1]+1))
-
+	start = b[u-1]
+	if k <= c[u-1]:
+		answer.append((str(traversal[start+k-1]+1)))
+		# print(traversal[start+k-1]+1)
 	else:
-		# answer += "-1\n"
-		print(-1)
-# print(answer)
+		answer.append("-1")
+print('\n'.join(answer))
