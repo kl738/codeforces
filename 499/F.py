@@ -1,3 +1,6 @@
+import sys
+sys.setrecursionlimit(1000000)
+
 n = int(input())
 op = [""] * n
 inflag = [True] * n
